@@ -5,11 +5,14 @@ package com.viniciusgomes.awesome.endpoint;
 // Por isso, esse endpoint é um @RestController
 
 import com.viniciusgomes.awesome.model.Student;
+import com.viniciusgomes.awesome.util.DateUtil;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.EnableMBeanExport;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 import static java.util.Arrays.asList;
@@ -19,10 +22,14 @@ import static java.util.Arrays.asList;
 @RequestMapping("student") // Como se faz para chegar nesse endpoint, nesse caso pelo nome student
 public class StudentEndpoint {
 
+    @Autowired // faz a injeção de dependência e instancia o objeto, por isso não tenho um new.
+    private DateUtil dateUtil;
+
     @RequestMapping(method = RequestMethod.GET, path = "/list") // Ponto de acesso ao método listAll
     // method mostra que o método HTTP para acesso a esse estudante é por meio de GET
     // path mostra qual o caminho percorrido para chegar no método por meio da URL
     public List<Student> listAll () {
+        System.out.println("Data: -> " + dateUtil.formatLocalDateTimeToDatabaseStyle(LocalDateTime.now()));
         return  asList(new Student("Deku"), new Student("Todoroki"));
     }
 }
