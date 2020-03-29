@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 import static java.util.Arrays.asList;
@@ -28,7 +29,7 @@ public class StudentEndpoint {
     // method mostra que o método HTTP para acesso a esse estudante é por meio de GET
     // path mostra qual o caminho percorrido para chegar no método por meio da URL
     public List<Student> listAll () {
-        //System.out.println("Data: -> " + dateUtil.formatLocalDateTimeToDatabaseStyle(LocalDateTime.now()));
+        // System.out.println("Data: -> " + dateUtil.formatLocalDateTimeToDatabaseStyle(LocalDateTime.now()));
         return  asList(new Student("Deku"), new Student("Todoroki"));
     }
 }
