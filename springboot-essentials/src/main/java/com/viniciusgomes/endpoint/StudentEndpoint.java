@@ -6,6 +6,7 @@ package com.viniciusgomes.endpoint;
 
 
 import com.viniciusgomes.error.CustomErrorType;
+import com.viniciusgomes.error.ResourceNotFoundException;
 import com.viniciusgomes.model.Student;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -36,17 +37,18 @@ public class StudentEndpoint {
         // a um cliente que fez uma requisição
     }
 
+    @GetMapping(path = "findByName/{name}")
+    public ResponseEntity<?> findStudentsByName(@PathVariable String name) {
+        return new ResponseEntity<>(studentDao.findByNameIgnoreCaseContaining(name), HttpStatus.OK);
+    }
+
 
 //    @RequestMapping(method = RequestMethod.GET, path = "/{id}")
     // path mostra qual o caminho percorrido para chegar no método por meio da URL
-    @GetMapping(path = "/{id")
+    @GetMapping(path = "/{id}")
     public ResponseEntity<?> getStudentById (@PathVariable("id") Long id) { //Apenas GET possuem variáveis no path
-
+        verifyIfStudentsExists(id); // método criado para verificar se o estudante existe
         Optional<Student> student = studentDao.findById(id);
-
-        if(!student.isPresent()) {
-            return new ResponseEntity<>(new CustomErrorType("Student not found"), HttpStatus.NOT_FOUND);
-        }
         return new ResponseEntity<>(student.get(), HttpStatus.OK);
     }
 
@@ -56,22 +58,34 @@ public class StudentEndpoint {
 //    @RequestMapping(method = RequestMethod.POST) // não precisamos do path, pq se o cliente fizer uma requisição POST, ele quer criar objeto
     @PostMapping
     public ResponseEntity<?> save (@RequestBody Student student) { //@RequestBody para pega o objeto que vem pelo POST
-        return new ResponseEntity<>(studentDao.save(student), HttpStatus.OK); //save do studentDao salva e retorna o valor
+        return new ResponseEntity<>(studentDao.save(student), HttpStatus.CREATED); //save do studentDao salva e retorna o valor
+        // também pode ser retornado HttpStatus.OK
     }
 
 //    @RequestMapping (method = RequestMethod.DELETE)
     @DeleteMapping(path = "/{id}")
     public ResponseEntity<?> delete (@PathVariable Long id) {
+        verifyIfStudentsExists(id); // método criado para verificar se o estudante existe
         studentDao.deleteById(id);
         return new ResponseEntity<>(HttpStatus.OK);
+        // também pode ser retornado HttpStatus.NO_CONTENT
     }
 
 //    @RequestMapping (method = RequestMethod.PUT)
     @PutMapping
     public ResponseEntity<?> update (@RequestBody Student student) {
+        verifyIfStudentsExists(student.getId()); // método criado para verificar se o estudante existe
         studentDao.save(student); // é o mesmo que o de inserção. A diferença é que o student com id será atualizado, sem id
         // será cadastrado
         return new ResponseEntity<>(HttpStatus.OK); // não retorno nada, pq ao fazer uma alteração, a pessoa já tem os valores
         // que ela espera que o recurso tenha
+
+    }
+
+    //Classe com a lógica de lançamento de exceções encapsulada
+    private void verifyIfStudentsExists(Long id) {
+        if (!studentDao.findById(id).isPresent()) {
+            throw new ResourceNotFoundException("Student not found for ID: " + id);
+        }
     }
 }
