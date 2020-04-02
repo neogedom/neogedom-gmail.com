@@ -1,13 +1,8 @@
 package com.viniciusgomes.error;
 
-import org.apache.tomcat.jni.Local;
-
-import java.time.LocalDate;
-import java.time.LocalDateTime;
-import java.time.ZoneId;
 import java.time.ZonedDateTime;
 
-public class ResourceNotFoundDetails extends ErrorDetail {
+public class ResourceNotFoundDetails extends ErrorDetails {
 
 
     public static final class Builder {
