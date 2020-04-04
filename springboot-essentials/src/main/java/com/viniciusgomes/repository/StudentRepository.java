@@ -2,11 +2,13 @@ package com.viniciusgomes.repository;
 
 import com.viniciusgomes.model.Student;
 import org.springframework.data.repository.CrudRepository;
+import org.springframework.data.repository.PagingAndSortingRepository;
 
 import java.util.List;
 
 
-public interface StudentRepository extends CrudRepository<Student, Long> // O Long no Generics é o tipo que representa o Id
+// PagingAndSortingRepository para criar paginação, ele estende de CrudRepository
+public interface StudentRepository extends PagingAndSortingRepository<Student, Long> // O Long no Generics é o tipo que representa o Id
     //A classe CrudRepository já tem alguns métodos importantes como achar por Id, deletar, etc.
 {
 

@@ -4,11 +4,7 @@ package com.viniciusgomes.model;
 import javax.persistence.Entity;
 import javax.validation.constraints.Email;
 import javax.validation.constraints.NotEmpty;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Objects;
 
-import static java.util.Arrays.asList;
 
 //A falta de getters e setters pode dar essa exceção
 // com.fasterxml.jackson.databind.exc.InvalidDefinitionException: No serializer found for class
