@@ -12,6 +12,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 import com.viniciusgomes.repository.StudentRepository;
@@ -71,6 +72,7 @@ public class StudentEndpoint {
 
 //    @RequestMapping (method = RequestMethod.DELETE)
     @DeleteMapping(path = "/{id}")
+    @PreAuthorize("hasRole('ADMIN')") // Verficar se o usuário tem o role ADMIN
     public ResponseEntity<?> delete (@PathVariable Long id) {
         verifyIfStudentsExists(id); // método criado para verificar se o estudante existe
         studentDao.deleteById(id);
