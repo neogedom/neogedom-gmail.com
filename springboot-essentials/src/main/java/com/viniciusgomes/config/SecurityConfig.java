@@ -8,8 +8,6 @@ import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
-import org.springframework.security.crypto.factory.PasswordEncoderFactories;
-import org.springframework.security.crypto.password.PasswordEncoder;
 
 @EnableWebSecurity //Adicionar a segurança do Spring Security
 @EnableGlobalMethodSecurity(prePostEnabled = true) // para o PreAuthorize funcionar
@@ -21,7 +19,8 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     @Override //Necessário sobrescrever
     protected void configure(HttpSecurity http) throws Exception {
         http.authorizeRequests()
-                .anyRequest().authenticated() // permitir qualquer requisição que seja autorizada
+                .antMatchers("/*/protected/**").hasRole("USER") // tudo que tiver algo, depois /students
+                .antMatchers("/*/admin/**").hasRole("ADMIN")
                 .and()
                 .httpBasic() // método de autenticação Http Basic (a autorização vem no header)
                 .and()

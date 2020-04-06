@@ -22,7 +22,7 @@ import java.util.Optional;
 
 @RestController // devolve um dado JSON e não uma view
 // Se estiver usando MVC, usa-se @Controller ao invés de @RestController
-@RequestMapping("students") // Como se faz para chegar nesse endpoint, nesse caso pelo nome students
+@RequestMapping("v1") // Como se faz para chegar nesse endpoint, nesse caso pelo nome students. V1 representa um versionamento na URL
 public class StudentEndpoint {
 
     private  final StudentRepository studentDao;
@@ -34,14 +34,14 @@ public class StudentEndpoint {
 
 //    @RequestMapping(method = RequestMethod.GET) // Ponto de acesso ao método listAll
     // method mostra que o método HTTP para acesso a esse estudante é por meio de GET
-    @GetMapping
+    @GetMapping(path = "protected/students")
     public ResponseEntity<?> listAll (Pageable pageable) {
         // System.out.println("Data: -> " + dateUtil.formatLocalDateTimeToDatabaseStyle(LocalDateTime.now()));
         return new ResponseEntity<>(studentDao.findAll(pageable), HttpStatus.OK); //retorna a lista de estudantes e o status da requisição
         // a um cliente que fez uma requisição
     }
 
-    @GetMapping(path = "findByName/{name}")
+    @GetMapping(path = "protected/students/findByName/{name}")
     public ResponseEntity<?> findStudentsByName(@PathVariable String name) {
         return new ResponseEntity<>(studentDao.findByNameIgnoreCaseContaining(name), HttpStatus.OK);
     }
@@ -49,7 +49,7 @@ public class StudentEndpoint {
 
 //    @RequestMapping(method = RequestMethod.GET, path = "/{id}")
     // path mostra qual o caminho percorrido para chegar no método por meio da URL
-    @GetMapping(path = "/{id}")
+    @GetMapping(path = "protected/students/{id}")
     public ResponseEntity<?> getStudentById (@PathVariable("id") Long id) { //Apenas GET possuem variáveis no path
         verifyIfStudentsExists(id); // método criado para verificar se o estudante existe
         Optional<Student> student = studentDao.findById(id);
@@ -60,7 +60,7 @@ public class StudentEndpoint {
     // PUT usado para atualizar dados
     // DELETE usado para deletar recursos no servidor
 //    @RequestMapping(method = RequestMethod.POST) // não precisamos do path, pq se o cliente fizer uma requisição POST, ele quer criar objeto
-    @PostMapping
+   @PostMapping(path = "admin/students")
    @Transactional(rollbackFor = Exception.class) // Anotando que é uma transação para tornar o rollback-commit ativo. É importante que a engine do BD seja InnoDB
     //Por padrão a @Transactional só trata exceções do tipo unchecked. Com exceções do tipo checked deve colocar
     // (rollbackFor = Exception.class)
@@ -70,9 +70,9 @@ public class StudentEndpoint {
         // também pode ser retornado HttpStatus.OK
     }
 
-//    @RequestMapping (method = RequestMethod.DELETE)
-    @DeleteMapping(path = "/{id}")
-    @PreAuthorize("hasRole('ADMIN')") // Verficar se o usuário tem o role ADMIN
+//  @RequestMapping (method = RequestMethod.DELETE)
+    @DeleteMapping(path = "admin/students/{id}") // Todos os métodos que fizerem alguma alteração no BD começar com admin na URL
+    // @PreAuthorize("hasRole('ADMIN')") // Verficar se o usuário tem o role ADMIN
     public ResponseEntity<?> delete (@PathVariable Long id) {
         verifyIfStudentsExists(id); // método criado para verificar se o estudante existe
         studentDao.deleteById(id);
@@ -81,7 +81,7 @@ public class StudentEndpoint {
     }
 
 //    @RequestMapping (method = RequestMethod.PUT)
-    @PutMapping
+    @PutMapping(path = "admin/students")
     public ResponseEntity<?> update (@RequestBody Student student) {
         verifyIfStudentsExists(student.getId()); // método criado para verificar se o estudante existe
         studentDao.save(student); // é o mesmo que o de inserção. A diferença é que o student com id será atualizado, sem id
