@@ -35,9 +35,9 @@ public class StudentEndpoint {
 //    @RequestMapping(method = RequestMethod.GET) // Ponto de acesso ao método listAll
     // method mostra que o método HTTP para acesso a esse estudante é por meio de GET
     @GetMapping(path = "protected/students")
-    public ResponseEntity<?> listAll (Pageable pageable) {
+    public ResponseEntity<?> listAll (Pageable pageable) { // Pageable para paginar a requisição
         // System.out.println("Data: -> " + dateUtil.formatLocalDateTimeToDatabaseStyle(LocalDateTime.now()));
-        return new ResponseEntity<>(studentDao.findAll(pageable), HttpStatus.OK); //retorna a lista de estudantes e o status da requisição
+        return new ResponseEntity<>(studentDao.findAll(), HttpStatus.OK); //retorna a lista de estudantes e o status da requisição
         // a um cliente que fez uma requisição
     }
 
