@@ -1,5 +1,6 @@
 package com.viniciusgomes.javaclient;
 
+import com.viniciusgomes.model.PageableResponse;
 import com.viniciusgomes.model.Student;
 import org.springframework.boot.web.client.RestTemplateBuilder;
 import org.springframework.core.ParameterizedTypeReference;
@@ -22,13 +23,19 @@ public class JavaSpringClientTest {
         System.out.println(student);
         System.out.println(entity.getBody());
         //Obtendo uma lista de estudantes
-        Student[] students = restTemplate.getForObject("/", Student[].class, 1);
-        System.out.println(Arrays.toString(students));
-        // Retornando um ResponseEntity que encapsula uma lista de estudantes
-        ResponseEntity<List<Student>> exchange = restTemplate.exchange("/", HttpMethod.GET, null,
-                new ParameterizedTypeReference<List<Student>>() {
+//        Student[] students = restTemplate.getForObject("/", Student[].class, 1);
+//        System.out.println(Arrays.toString(students));
+//        // Retornando um ResponseEntity que encapsula uma lista de estudantes
+//        ResponseEntity<List<Student>> exchange = restTemplate.exchange("/", HttpMethod.GET, null,
+//                new ParameterizedTypeReference<List<Student>>() {
+//                });
+//        System.out.println(exchange.getBody());
+
+        // Obtendo uma lista de estudantes paginada
+        ResponseEntity<PageableResponse<Student>> exchange = restTemplate.exchange("/", HttpMethod.GET, null,
+                new ParameterizedTypeReference<PageableResponse<Student>>() {
                 });
-        System.out.println(exchange.getBody());
+        System.out.println(exchange);
 
     }
 }
