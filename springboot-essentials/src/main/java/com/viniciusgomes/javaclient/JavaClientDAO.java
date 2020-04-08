@@ -1,5 +1,6 @@
 package com.viniciusgomes.javaclient;
 
+import com.viniciusgomes.handler.RestResponseExceptionHandler;
 import com.viniciusgomes.model.PageableResponse;
 import com.viniciusgomes.model.Student;
 import org.springframework.boot.web.client.RestTemplateBuilder;
@@ -14,11 +15,13 @@ public class JavaClientDAO {
     private RestTemplate restTemplate = new RestTemplateBuilder()
             .rootUri("http://localhost:8080/v1/protected/students")
             .basicAuthentication("toyo", "senha")
+            .errorHandler(new RestResponseExceptionHandler())
             .build();
 
     private RestTemplate restTemplateAdmin = new RestTemplateBuilder()
             .rootUri("http://localhost:8080/v1/admin/students")
             .basicAuthentication("toyo", "senha")
+            .errorHandler(new RestResponseExceptionHandler())
             .build();
 
     public Student findById(long id) {
@@ -41,6 +44,17 @@ public class JavaClientDAO {
         return  exchangePost.getBody();
 
     }
+
+    public void update(Student student){
+        restTemplateAdmin.put("/", student);
+
+    }
+
+    public void delete(long id){
+        restTemplateAdmin.delete("/{id}", id);
+
+    }
+
 
     private static HttpHeaders createJSONHeaders() {
         HttpHeaders headers = new HttpHeaders();
